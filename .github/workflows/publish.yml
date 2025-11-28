@@ -1,0 +1,279 @@
+name: Publish Packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to publish'
+        required: true
+        type: choice
+        options:
+          - python-sdk
+          - node-sdk
+          - php-sdk
+          - go-sdk
+          - flutter-sdk
+      version:
+        description: 'Version to publish (e.g., 0.1.0)'
+        required: true
+        type: string
+
+jobs:
+  # Publish Python SDK to PyPI
+  publish-python-sdk:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.package == 'python-sdk') ||
+      (github.event_name == 'release' && contains(github.event.release.tag_name, 'python-sdk'))
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+
+      - name: Update version
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: packages/python-sdk
+        run: |
+          poetry version ${{ github.event.inputs.version }}
+
+      - name: Build package
+        working-directory: packages/python-sdk
+        run: poetry build
+
+      - name: Publish to Test PyPI
+        working-directory: packages/python-sdk
+        env:
+          POETRY_PYPI_TOKEN_TESTPYPI: ${{ secrets.TEST_PYPI_TOKEN }}
+        run: |
+          poetry config repositories.testpypi https://test.pypi.org/legacy/
+          poetry publish -r testpypi
+        continue-on-error: true
+
+      - name: Publish to PyPI
+        working-directory: packages/python-sdk
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: poetry publish
+
+      - name: Create GitHub Release Asset
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-sdk-dist
+          path: packages/python-sdk/dist/
+
+  # Publish Node.js SDK to npm
+  publish-node-sdk:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.package == 'node-sdk') ||
+      (github.event_name == 'release' && contains(github.event.release.tag_name, 'node-sdk'))
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        working-directory: packages/node-sdk
+        run: npm ci
+
+      - name: Update version
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: packages/node-sdk
+        run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
+
+      - name: Build
+        working-directory: packages/node-sdk
+        run: npm run build
+
+      - name: Run tests
+        working-directory: packages/node-sdk
+        run: npm test
+
+      - name: Publish to npm
+        working-directory: packages/node-sdk
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
+
+      - name: Create GitHub Release Asset
+        uses: actions/upload-artifact@v3
+        with:
+          name: node-sdk-dist
+          path: packages/node-sdk/dist/
+
+  # Publish PHP SDK to Packagist (auto via GitHub webhook)
+  publish-php-sdk:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.package == 'php-sdk') ||
+      (github.event_name == 'release' && contains(github.event.release.tag_name, 'php-sdk'))
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Validate composer.json
+        working-directory: packages/php-sdk
+        run: composer validate --strict
+
+      - name: Update version
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: packages/php-sdk
+        run: |
+          echo "Version updated to ${{ github.event.inputs.version }}"
+          # Update version in composer.json
+          composer config version ${{ github.event.inputs.version }}
+
+      - name: Install dependencies
+        working-directory: packages/php-sdk
+        run: composer install --no-dev --prefer-dist
+
+      - name: Create release archive
+        working-directory: packages/php-sdk
+        run: |
+          mkdir -p dist
+          tar -czf dist/kra-connect-php-${{ github.event.inputs.version }}.tar.gz --exclude=dist .
+
+      - name: Upload release asset
+        uses: actions/upload-artifact@v3
+        with:
+          name: php-sdk-dist
+          path: packages/php-sdk/dist/
+
+      - name: Notify Packagist
+        run: |
+          echo "Packagist will auto-update via GitHub webhook"
+          echo "Ensure webhook is configured at https://packagist.org"
+
+  # Publish Go SDK (tagged release)
+  publish-go-sdk:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.package == 'go-sdk') ||
+      (github.event_name == 'release' && contains(github.event.release.tag_name, 'go-sdk'))
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Run tests
+        working-directory: packages/go-sdk
+        run: go test -v ./...
+
+      - name: Build
+        working-directory: packages/go-sdk
+        run: go build -v ./...
+
+      - name: Create Git tag for Go module
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git tag -a go-sdk/v${{ github.event.inputs.version }} -m "Release go-sdk v${{ github.event.inputs.version }}"
+          git push origin go-sdk/v${{ github.event.inputs.version }}
+
+      - name: Create release notes
+        run: |
+          echo "Go SDK v${{ github.event.inputs.version }} published"
+          echo "Use: go get github.com/your-org/kra-connect/packages/go-sdk@v${{ github.event.inputs.version }}"
+
+  # Publish Flutter SDK to pub.dev
+  publish-flutter-sdk:
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.package == 'flutter-sdk') ||
+      (github.event_name == 'release' && contains(github.event.release.tag_name, 'flutter-sdk'))
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'stable'
+
+      - name: Update version
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: packages/flutter-sdk
+        run: |
+          # Update version in pubspec.yaml
+          sed -i "s/version: .*/version: ${{ github.event.inputs.version }}/" pubspec.yaml
+
+      - name: Get dependencies
+        working-directory: packages/flutter-sdk
+        run: flutter pub get
+
+      - name: Run tests
+        working-directory: packages/flutter-sdk
+        run: flutter test
+
+      - name: Publish dry run
+        working-directory: packages/flutter-sdk
+        run: flutter pub publish --dry-run
+
+      - name: Publish to pub.dev
+        working-directory: packages/flutter-sdk
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p ~/.pub-cache
+          echo "$PUB_CREDENTIALS" > ~/.pub-cache/credentials.json
+          flutter pub publish --force
+
+  # Create combined release notes
+  create-release-notes:
+    needs: [publish-python-sdk, publish-node-sdk]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Generate release notes
+        run: |
+          echo "# KRA-Connect Release" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "## Packages Published" >> release-notes.md
+          echo "" >> release-notes.md
+
+          if [ "${{ needs.publish-python-sdk.result }}" == "success" ]; then
+            echo "✅ Python SDK - Published to PyPI" >> release-notes.md
+          fi
+
+          if [ "${{ needs.publish-node-sdk.result }}" == "success" ]; then
+            echo "✅ Node.js SDK - Published to npm" >> release-notes.md
+          fi
+
+          cat release-notes.md
+
+      - name: Upload release notes
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-notes
+          path: release-notes.md

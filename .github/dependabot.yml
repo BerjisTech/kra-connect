@@ -1,0 +1,99 @@
+version: 2
+updates:
+  # Root npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # Node.js SDK
+  - package-ecosystem: "npm"
+    directory: "/packages/node-sdk"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "node-sdk"
+      - "automated"
+    commit-message:
+      prefix: "chore(node-sdk)"
+
+  # Python SDK
+  - package-ecosystem: "pip"
+    directory: "/packages/python-sdk"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python-sdk"
+      - "automated"
+    commit-message:
+      prefix: "chore(python-sdk)"
+
+  # PHP SDK (when ready)
+  - package-ecosystem: "composer"
+    directory: "/packages/php-sdk"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "php-sdk"
+      - "automated"
+    commit-message:
+      prefix: "chore(php-sdk)"
+
+  # Go SDK (when ready)
+  - package-ecosystem: "gomod"
+    directory: "/packages/go-sdk"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "go-sdk"
+      - "automated"
+    commit-message:
+      prefix: "chore(go-sdk)"
+
+  # Flutter SDK (when ready)
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter-sdk"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "flutter-sdk"
+      - "automated"
+    commit-message:
+      prefix: "chore(flutter-sdk)"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+    commit-message:
+      prefix: "chore(ci)"

@@ -1,0 +1,195 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # Check code formatting
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Prettier formatting
+        run: npm run format:check
+
+      - name: Check for formatting issues
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "❌ Code formatting issues found!"
+            echo "Run 'npm run format' to fix formatting issues."
+            exit 1
+          fi
+          echo "✅ Code formatting looks good!"
+
+  # Python code quality
+  python-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install dependencies
+        working-directory: packages/python-sdk
+        run: poetry install
+
+      - name: Check Black formatting
+        working-directory: packages/python-sdk
+        run: poetry run black --check src/ tests/
+        continue-on-error: true
+
+      - name: Check isort imports
+        working-directory: packages/python-sdk
+        run: poetry run isort --check-only src/ tests/
+        continue-on-error: true
+
+      - name: Run mypy type checking
+        working-directory: packages/python-sdk
+        run: poetry run mypy src/
+        continue-on-error: true
+
+      - name: Run pylint
+        working-directory: packages/python-sdk
+        run: poetry run pylint src/ --fail-under=8.0
+        continue-on-error: true
+
+  # Node.js code quality
+  node-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: packages/node-sdk
+        run: npm ci
+
+      - name: Run TypeScript type checking
+        working-directory: packages/node-sdk
+        run: npm run typecheck
+
+      - name: Run ESLint
+        working-directory: packages/node-sdk
+        run: npm run lint
+
+  # Security scanning
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Check npm audit (Node.js SDK)
+        working-directory: packages/node-sdk
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+  # Documentation check
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for README files
+        run: |
+          echo "Checking for README files in all packages..."
+          for dir in packages/*/; do
+            if [ ! -f "$dir/README.md" ]; then
+              echo "❌ Missing README.md in $dir"
+              exit 1
+            fi
+          done
+          echo "✅ All packages have README files"
+
+      - name: Check for CHANGELOG files
+        run: |
+          echo "Checking for CHANGELOG files..."
+          for dir in packages/*/; do
+            if [ ! -f "$dir/CHANGELOG.md" ] && [ ! -f "$dir/CHANGES.md" ]; then
+              echo "⚠️  Missing CHANGELOG in $dir (recommended)"
+            fi
+          done
+
+      - name: Validate markdown
+        uses: DavidAnson/markdownlint-cli2-action@v14
+        with:
+          globs: '**/*.md'
+        continue-on-error: true
+
+  # License check
+  license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for LICENSE file
+        run: |
+          if [ ! -f "LICENSE" ]; then
+            echo "❌ LICENSE file is missing!"
+            exit 1
+          fi
+          echo "✅ LICENSE file found"
+
+      - name: Verify MIT License
+        run: |
+          if ! grep -q "MIT" LICENSE; then
+            echo "⚠️  LICENSE file doesn't contain MIT license"
+          fi
+
+  # Commit message linting (for PRs)
+  commit-lint:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install commitlint
+        run: |
+          npm install -g @commitlint/cli @commitlint/config-conventional
+
+      - name: Validate PR commits
+        run: |
+          npx commitlint --from=${{ github.event.pull_request.base.sha }} --to=${{ github.event.pull_request.head.sha }}
+        continue-on-error: true
