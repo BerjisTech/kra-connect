@@ -104,7 +104,7 @@ jobs:
         run: poetry run pytest --cov --cov-report=xml --cov-report=term
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           file: packages/python-sdk/coverage.xml
           flags: python-sdk
@@ -156,7 +156,7 @@ jobs:
         run: npm run test:coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           file: packages/node-sdk/coverage/coverage-final.json
           flags: node-sdk
@@ -201,7 +201,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           file: packages/php-sdk/coverage.xml
           flags: php-sdk
@@ -235,7 +235,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           file: packages/go-sdk/coverage.txt
           flags: go-sdk
@@ -272,7 +272,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           file: packages/flutter-sdk/coverage/lcov.info
           flags: flutter-sdk
