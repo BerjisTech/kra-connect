@@ -51,7 +51,7 @@ import 'package:kra_connect/kra_connect.dart';
 void main() async {
   // Create client
   final client = KraClient(
-    apiKey: 'your-api-key-here',
+    config: KraConfig(apiKey: 'your-api-key-here'),
   );
 
   try {
@@ -65,7 +65,7 @@ void main() async {
   } on KraException catch (e) {
     print('Error: ${e.message}');
   } finally {
-    client.dispose();
+    client.close();
   }
 }
 ```
@@ -75,7 +75,9 @@ void main() async {
 ### PIN Verification
 
 ```dart
-final client = KraClient(apiKey: 'your-api-key');
+final client = KraClient(
+  config: KraConfig(apiKey: 'your-api-key'),
+);
 
 try {
   final result = await client.verifyPin('P051234567A');
@@ -105,7 +107,7 @@ try {
 ```dart
 final result = await client.verifyTcc('TCC123456');
 
-if (result.isCurrentlyValid) {
+if (result.isValid && !result.isExpired) {
   print('TCC valid until: ${result.expiryDate}');
   print('Days remaining: ${result.daysUntilExpiry}');
 
@@ -175,7 +177,7 @@ for (final obligation in details.obligations) {
 ```dart
 // Verify multiple PINs concurrently
 final pins = ['P051234567A', 'P051234567B', 'P051234567C'];
-final results = await client.verifyPinsBatch(pins);
+final results = await client.verifyPinBatch(pins);
 
 for (final result in results) {
   print('${result.pinNumber}: ${result.isValid}');
@@ -183,36 +185,34 @@ for (final result in results) {
 
 // Verify multiple TCCs concurrently
 final tccs = ['TCC123456', 'TCC123457'];
-final tccResults = await client.verifyTccsBatch(tccs);
+final tccResults = await client.verifyTccBatch(tccs);
 ```
 
 ### Configuration
 
 ```dart
 final client = KraClient(
-  apiKey: 'your-api-key',
   config: KraConfig(
-    baseUrl: 'https://api.kra.go.ke/gavaconnect/v1',
+    apiKey: 'your-api-key',
+    baseUrl: 'https://api.kra.go.ke/gavaconnect',
     timeout: Duration(seconds: 30),
 
     // Retry configuration
     maxRetries: 3,
-    initialRetryDelay: Duration(seconds: 1),
-    maxRetryDelay: Duration(seconds: 32),
+    retryDelay: Duration(seconds: 1),
+    maxRetryDelay: Duration(seconds: 30),
 
     // Rate limiting
     enableRateLimit: true,
-    maxRequestsPerMinute: 100,
+    maxRequestsPerSecond: 10,
 
     // Caching
     enableCache: true,
-    pinVerificationTtl: Duration(hours: 1),
-    tccVerificationTtl: Duration(minutes: 30),
-    eslipValidationTtl: Duration(minutes: 15),
-    taxpayerDetailsTtl: Duration(hours: 2),
+    cacheTtl: Duration(hours: 1),
+    maxCacheSize: 100,
 
     // Debug mode
-    debugMode: false,
+    enableDebugLogging: false,
   ),
 );
 ```
@@ -257,7 +257,9 @@ class PinVerificationWidget extends StatefulWidget {
 }
 
 class _PinVerificationWidgetState extends State<PinVerificationWidget> {
-  final _client = KraClient(apiKey: 'your-api-key');
+  final _client = KraClient(
+    config: KraConfig(apiKey: 'your-api-key'),
+  );
   final _pinController = TextEditingController();
   PinVerificationResult? _result;
   String? _error;
@@ -265,7 +267,7 @@ class _PinVerificationWidgetState extends State<PinVerificationWidget> {
 
   @override
   void dispose() {
-    _client.dispose();
+    _client.close();
     _pinController.dispose();
     super.dispose();
   }
@@ -400,7 +402,7 @@ class BatchVerificationService {
 
   void dispose() {
     _resultsController.close();
-    _client.dispose();
+    _client.close();
   }
 }
 ```
@@ -414,8 +416,7 @@ Main client class for interacting with KRA API.
 ```dart
 class KraClient {
   KraClient({
-    required String apiKey,
-    KraConfig? config,
+    required KraConfig config,
   });
 
   Future<PinVerificationResult> verifyPin(String pin);
@@ -424,11 +425,17 @@ class KraClient {
   Future<NilReturnResult> fileNilReturn(NilReturnRequest request);
   Future<TaxpayerDetails> getTaxpayerDetails(String pin);
 
-  Future<List<PinVerificationResult>> verifyPinsBatch(List<String> pins);
-  Future<List<TccVerificationResult>> verifyTccsBatch(List<String> tccs);
+  Future<List<PinVerificationResult>> verifyPinBatch(List<String> pins);
+  Future<List<TccVerificationResult>> verifyTccBatch(List<String> tccs);
+  Future<List<EslipValidationResult>> validateEslipBatch(List<String> eslips);
 
   void clearCache();
-  void dispose();
+  void removeCacheEntry(String key);
+  Map<String, dynamic> getCacheStats();
+  Map<String, dynamic> getRateLimiterStats();
+  void resetRateLimiter();
+  Map<String, dynamic> getStats();
+  void close();
 }
 ```
 
@@ -436,24 +443,25 @@ class KraClient {
 
 ```dart
 class KraConfig {
+  final String apiKey;
   final String baseUrl;
   final Duration timeout;
 
   final int maxRetries;
-  final Duration initialRetryDelay;
+  final Duration retryDelay;
   final Duration maxRetryDelay;
+  final List<int> retryStatusCodes;
 
   final bool enableRateLimit;
-  final int maxRequestsPerMinute;
+  final int maxRequestsPerSecond;
 
   final bool enableCache;
-  final Duration pinVerificationTtl;
-  final Duration tccVerificationTtl;
-  final Duration eslipValidationTtl;
-  final Duration taxpayerDetailsTtl;
-  final Duration nilReturnTtl;
+  final Duration cacheTtl;
+  final int maxCacheSize;
 
-  final bool debugMode;
+  final bool enableDebugLogging;
+  final Map<String, String>? customHeaders;
+  final String userAgent;
 }
 ```
 

@@ -69,8 +69,10 @@ func (rl *RateLimiter) Wait() {
 			return
 		}
 
-		// Calculate how long to wait for next token
-		waitDuration := rl.calculateWaitTime()
+		// Calculate how long to wait for next token (inline to avoid deadlock)
+		timePerToken := time.Second / time.Duration(rl.refillRate)
+		waitDuration := timePerToken + (10 * time.Millisecond)
+
 		if rl.debug {
 			fmt.Printf("[RateLimit] WAIT: Sleeping for %v\n", waitDuration)
 		}
@@ -137,18 +139,6 @@ func (rl *RateLimiter) refill() {
 			fmt.Printf("[RateLimit] REFILL: Added %d tokens (now: %d/%d)\n", tokensToAdd, rl.tokens, rl.maxTokens)
 		}
 	}
-}
-
-// calculateWaitTime calculates how long to wait for the next token
-func (rl *RateLimiter) calculateWaitTime() time.Duration {
-	rl.mu.Lock()
-	defer rl.mu.Unlock()
-
-	// Time to generate one token
-	timePerToken := time.Second / time.Duration(rl.refillRate)
-
-	// Add a small buffer to ensure token is available
-	return timePerToken + (10 * time.Millisecond)
 }
 
 // AvailableTokens returns the current number of available tokens
