@@ -1,0 +1,52 @@
+{
+  "name": "kra-connect-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KRA-Connect monorepo - Production-ready SDKs and tools for KRA GavaConnect API integration",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "tools/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "dev": "turbo run dev --parallel",
+    "typecheck": "turbo run typecheck"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@types/node": "^20.10.0",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.0",
+    "turbo": "^1.11.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/kra-connect.git"
+  },
+  "keywords": [
+    "kra",
+    "kenya-revenue-authority",
+    "gavaconnect",
+    "tax-compliance",
+    "pin-verification",
+    "tcc-verification",
+    "tax-automation",
+    "kenya",
+    "api-client",
+    "sdk"
+  ],
+  "author": "KRA-Connect Team",
+  "license": "MIT",
+  "packageManager": "npm@9.0.0"
+}
