@@ -90,3 +90,12 @@ export 'src/exceptions/timeout_exception.dart';
 export 'src/exceptions/api_exception.dart';
 export 'src/exceptions/network_exception.dart';
 export 'src/exceptions/cache_exception.dart';
+
+// Utilities
+export 'src/utils/validators.dart';
+
+// Services (for advanced use cases)
+export 'src/services/cache_manager.dart';
+export 'src/services/http_client.dart';
+export 'src/services/rate_limiter.dart';
+export 'src/services/retry_handler.dart';
