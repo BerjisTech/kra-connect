@@ -202,5 +202,9 @@ func (rl *RateLimiter) EstimateWaitTime() time.Duration {
 		return 0
 	}
 
-	return rl.calculateWaitTime()
+	// Time to generate one token (inline to avoid deadlock)
+	timePerToken := time.Second / time.Duration(rl.refillRate)
+
+	// Add a small buffer to ensure token is available
+	return timePerToken + (10 * time.Millisecond)
 }
