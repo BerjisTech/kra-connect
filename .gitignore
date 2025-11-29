@@ -4,9 +4,7 @@
 # ============================================
 
 # Exclude all package directories (managed in separate repos)
-packages/
-/packages/**
-/packages/*
+packages/kra-*
 
 # Exclude tools directory if it becomes separate
 tools/

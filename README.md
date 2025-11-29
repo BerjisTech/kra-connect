@@ -101,11 +101,27 @@ print(result.taxpayer_name)
 
 ## 🛠️ Development
 
-This repository contains project documentation and planning. Each SDK is developed in its own repository:
+### Repository Structure
+
+**IMPORTANT: This is the documentation and planning repository.**
+
+This repository serves as:
+- 📚 **Central documentation hub** - All project documentation, guides, and architecture decisions
+- 📋 **Project planning** - Roadmaps, checklists, and coordination across all SDKs
+- 🔧 **Development tools** - Mock server, API collections, and testing utilities
+- 🏢 **Business applications** - Dashboard and other deployable applications (in `apps/` folder)
+
+**The SDKs themselves live in separate repositories:**
+- Each SDK (Python, Node.js, PHP, Go, Flutter) is maintained in its own GitHub repository
+- The `packages/` folder contains ONLY development tools: mock server and test utilities
+- SDK folders are NOT tracked in this repository (see `.gitignore`)
+- Production SDK code is published from the separate repositories, NOT from this repo
+
+📖 **See [REPOSITORY_STRUCTURE.md](./REPOSITORY_STRUCTURE.md) for complete details on the repository architecture.**
 
 ### Contributing to SDKs
 
-Clone the specific SDK repository you want to contribute to:
+To contribute to an SDK, clone its specific repository:
 
 ```bash
 # Python SDK

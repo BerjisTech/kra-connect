@@ -585,6 +585,16 @@ All SDKs have:
 - ✅ Added Newman CLI integration guide
 - ✅ Updated project status documentation
 - ✅ Updated kra-connect.md checklist with completed items
+- ✅ **Clarified Repository Structure in Documentation**
+- ✅ Updated README.md with explicit multi-repo architecture explanation
+- ✅ Updated .gitignore to exclude SDK folders but keep development tools
+- ✅ Created comprehensive packages/README.md - explains that SDKs are NOT in main repo
+- ✅ Created apps/README.md documenting business applications directory
+- ✅ Created tools/README.md documenting API collections and empty placeholders
+- ✅ Created REPOSITORY_STRUCTURE.md - complete repository architecture guide
+- ✅ Marked architecture decision as complete in kra-connect.md
+- ✅ Clarified that packages/ contains ONLY development tools (mock server, test utils)
+- ✅ Clarified that SDK folders are NOT tracked in main repo (.gitignore)
 
 ### 2025-01-28 (Previous Session)
 - ✅ Completed Flutter SDK (45+ files)
