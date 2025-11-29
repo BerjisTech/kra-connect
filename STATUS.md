@@ -13,8 +13,9 @@
 | **Flutter SDK** | ✅ Complete | 100% | 45+ | ✅ Passing |
 | **CLI Tool** | ✅ Complete | 100% | 7 | ✅ Passing |
 | **Mock Server** | ✅ Complete | 95% | 3 | ✅ Tested |
+| **API Collections** | ✅ Complete | 100% | 4 | ✅ Tested |
 | **CI/CD** | ✅ Complete | 100% | 5 workflows | ✅ Configured |
-| **Documentation** | 🚧 In Progress | 75% | Multiple | - |
+| **Documentation** | 🚧 In Progress | 80% | Multiple | - |
 
 ---
 
@@ -185,6 +186,72 @@
 - ⏳ Add unit tests for handlers
 
 ### Phase 3: Developer Tools (continued)
+
+#### API Collections (Postman/Insomnia) - ✅ Complete
+**Status**: Complete testing collections with automated tests
+
+**Completed**:
+- ✅ Comprehensive Postman collection with 15+ requests
+- ✅ All 10 KRA API endpoints covered
+- ✅ Automated tests for every endpoint
+- ✅ Global pre-request scripts for auth
+- ✅ Global test scripts for validation
+- ✅ Insomnia collection (alternative REST client)
+- ✅ Development environment (Mock Server)
+- ✅ Production environment template
+- ✅ Comprehensive README (400+ lines)
+- ✅ Usage examples for all endpoints
+- ✅ CI/CD integration guide (Newman)
+- ✅ Troubleshooting documentation
+
+**Files Created**:
+- `KRA-GavaConnect.postman_collection.json` - Complete Postman collection
+- `Development.postman_environment.json` - Mock server environment
+- `Production.postman_environment.json` - Production environment
+- `KRA-GavaConnect.insomnia.json` - Insomnia collection
+- `README.md` - Complete documentation (400+ lines)
+
+**Features**:
+- ✅ Organized folder structure by endpoint type
+- ✅ Environment variables for easy switching
+- ✅ Automated response validation
+- ✅ Error scenario testing
+- ✅ Batch operation examples
+- ✅ Newman CLI support for automation
+- ✅ Request chaining with variables
+- ✅ CSV data file support
+
+**Test Coverage**:
+```javascript
+// Global tests for all endpoints
+- Status code validation (2xx)
+- Response time check (<5s)
+- Content-Type validation (JSON)
+
+// Endpoint-specific tests
+- Response structure validation
+- Required fields presence
+- Data type validation
+- Business logic validation
+```
+
+**Usage**:
+```bash
+# Import into Postman
+File → Import → KRA-GavaConnect.postman_collection.json
+
+# Run with Newman CLI
+newman run KRA-GavaConnect.postman_collection.json \
+  -e Development.postman_environment.json
+
+# Generate HTML report
+newman run KRA-GavaConnect.postman_collection.json \
+  -e Development.postman_environment.json \
+  --reporters cli,html
+```
+
+**Pending**:
+- ⏳ Publish to Postman public workspace
 
 #### CLI Tool (kra-cli) - ✅ Complete
 **Status**: All core commands implemented and working
@@ -446,13 +513,19 @@ All SDKs have:
    - pkg.go.dev (Go)
    - pub.dev (Flutter)
 
-5. Create mock server for testing
-   - Use Gin framework (Go) for consistency
-   - Implement all endpoints
-   - Add realistic response generators
-   - Create Docker image
+5. ✅ **COMPLETED** - Mock server for testing
+   - ✅ Use Gin framework (Go) for consistency
+   - ✅ Implement all endpoints
+   - ✅ Add realistic response generators
+   - ✅ Create Docker image
 
-6. Build documentation website
+6. ✅ **COMPLETED** - API testing collections
+   - ✅ Complete Postman collection
+   - ✅ Insomnia collection
+   - ✅ Automated tests
+   - ✅ Environment templates
+
+7. Build documentation website
    - Set up Docusaurus
    - Migrate existing docs
    - Add interactive examples
@@ -484,12 +557,7 @@ All SDKs have:
    - **Status**: Documented, awaiting decision
 
 ### Minor
-1. **CLI Incomplete**: Some commands not yet implemented
-   - **Impact**: Limited CLI functionality
-   - **Fix**: Continue implementation
-   - **Status**: In progress
-
-2. **No Real API Testing**: SDKs not tested against production KRA API
+1. **No Real API Testing**: SDKs not tested against production KRA API
    - **Impact**: Unknown API compatibility
    - **Fix**: Obtain API key and test
    - **Status**: Pending API access
@@ -506,8 +574,15 @@ All SDKs have:
 - ✅ Implemented all 10 KRA API endpoints with realistic responses
 - ✅ Added configurable delays and error simulation
 - ✅ Created Docker support with multi-stage build
-- ✅ Wrote comprehensive 400+ line README with examples
+- ✅ Wrote comprehensive mock server README (400+ lines)
 - ✅ Tested mock server endpoints successfully
+- ✅ **Created Complete API Collections (Postman & Insomnia)**
+- ✅ Built Postman collection with 15+ requests and automated tests
+- ✅ Created Insomnia collection for alternative REST client
+- ✅ Added Development & Production environments
+- ✅ Implemented global test scripts and validations
+- ✅ Wrote comprehensive collections README (400+ lines)
+- ✅ Added Newman CLI integration guide
 - ✅ Updated project status documentation
 - ✅ Updated kra-connect.md checklist with completed items
 

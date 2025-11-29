@@ -23,7 +23,8 @@
       "Bash(then ls -1 \"packages/kra-connect-$dir\")",
       "Bash(go mod init:*)",
       "Bash(go get:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm init:*)"
     ],
     "deny": [],
     "ask": []
