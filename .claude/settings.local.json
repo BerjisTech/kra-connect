@@ -18,7 +18,9 @@
       "Bash(./kra-cli.exe:*)",
       "Bash(for dir in python-sdk node-sdk php-sdk go-sdk flutter-sdk kra-cli)",
       "Bash(if [ -d \"packages/$dir\" ])",
-      "Bash(then ls -1 \"packages/$dir\")"
+      "Bash(then ls -1 \"packages/$dir\")",
+      "Bash(if [ -d \"packages/kra-connect-$dir\" ])",
+      "Bash(then ls -1 \"packages/kra-connect-$dir\")"
     ],
     "deny": [],
     "ask": []
