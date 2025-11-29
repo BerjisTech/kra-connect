@@ -1,3 +1,14 @@
+# ============================================
+# KRA-Connect Root Repository
+# Individual packages are managed in separate repositories
+# ============================================
+
+# Exclude all package directories (managed in separate repos)
+packages/
+
+# Exclude tools directory if it becomes separate
+tools/
+
 # Dependencies
 node_modules/
 __pycache__/

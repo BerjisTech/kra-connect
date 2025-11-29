@@ -11,7 +11,14 @@
       "Bash(fi)",
       "Bash(go test:*)",
       "Bash(timeout 30 go test:*)",
-      "Bash(timeout 120 go test:*)"
+      "Bash(timeout 120 go test:*)",
+      "Bash(go clean:*)",
+      "Bash(go mod tidy:*)",
+      "Bash(go build:*)",
+      "Bash(./kra-cli.exe:*)",
+      "Bash(for dir in python-sdk node-sdk php-sdk go-sdk flutter-sdk kra-cli)",
+      "Bash(if [ -d \"packages/$dir\" ])",
+      "Bash(then ls -1 \"packages/$dir\")"
     ],
     "deny": [],
     "ask": []
