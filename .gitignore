@@ -5,6 +5,7 @@
 
 # Exclude all package directories (managed in separate repos)
 packages/
+/packages/**
 /packages/*
 
 # Exclude tools directory if it becomes separate

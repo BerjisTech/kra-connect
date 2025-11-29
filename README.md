@@ -11,22 +11,39 @@ KRA-Connect is a comprehensive ecosystem that provides Kenyan businesses and dev
 
 ## 📦 Packages
 
+Each SDK is maintained in its own repository for easier maintenance and distribution:
+
 ### SDKs
-- **[@kra-connect/node](./packages/node-sdk)** - TypeScript/Node.js SDK
-- **[kra-python](./packages/python-sdk)** - Python SDK
-- **[kra-connect-php](./packages/php-sdk)** - PHP SDK
-- **[go-kra-connect](./packages/go-sdk)** - Go SDK
-- **[kra_connect](./packages/flutter-sdk)** - Flutter/Dart SDK
+- **[kra-connect-python-sdk](https://github.com/BerjisTech/kra-connect-python-sdk)** - Python SDK
+  ```bash
+  pip install kra-connect
+  ```
+
+- **[kra-connect-node-sdk](https://github.com/BerjisTech/kra-connect-node-sdk)** - TypeScript/Node.js SDK
+  ```bash
+  npm install @kra-connect/node
+  ```
+
+- **[kra-connect-php-sdk](https://github.com/BerjisTech/kra-connect-php-sdk)** - PHP SDK
+  ```bash
+  composer require kra-connect/php-sdk
+  ```
+
+- **[kra-connect-go-sdk](https://github.com/BerjisTech/kra-connect-go-sdk)** - Go SDK
+  ```bash
+  go get github.com/BerjisTech/kra-connect-go-sdk
+  ```
+
+- **[kra-connect-flutter-sdk](https://github.com/BerjisTech/kra-connect-flutter-sdk)** - Flutter/Dart SDK
+  ```bash
+  flutter pub add kra_connect
+  ```
 
 ### Developer Tools
-- **[kra-cli](./tools/cli)** - Command-line interface for KRA operations
-- **[kra-mock-server](./tools/mock-server)** - Mock GavaConnect API server for testing
-- **[kra-test-utils](./tools/test-utils)** - Testing utilities and fixtures
-
-### Business Applications
-- **[Dashboard](./apps/dashboard)** - Tax compliance dashboard (Angular)
-- **[API Service](./apps/api-service)** - Supplier verification API service
-- **[Mobile App](./apps/mobile)** - Flutter mobile application
+- **[kra-cli](https://github.com/BerjisTech/kra-cli)** - Command-line interface for KRA operations
+  ```bash
+  go install github.com/BerjisTech/kra-cli@latest
+  ```
 
 ## 🚀 Quick Start
 
@@ -84,33 +101,33 @@ print(result.taxpayer_name)
 
 ## 🛠️ Development
 
-### Prerequisites
-- Node.js 18+
-- Python 3.9+
-- PHP 8.1+
-- Go 1.21+
-- Flutter 3.0+
-- Docker & Docker Compose
+This repository contains project documentation and planning. Each SDK is developed in its own repository:
 
-### Setup
+### Contributing to SDKs
+
+Clone the specific SDK repository you want to contribute to:
+
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/kra-connect.git
-cd kra-connect
+# Python SDK
+git clone git@github.com:BerjisTech/kra-connect-python-sdk.git
 
-# Install dependencies for all packages
-npm install
+# Node.js SDK
+git clone git@github.com:BerjisTech/kra-connect-node-sdk.git
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your API credentials
+# PHP SDK
+git clone git@github.com:BerjisTech/kra-connect-php-sdk.git
 
-# Run tests
-npm test
+# Go SDK
+git clone git@github.com:BerjisTech/kra-connect-go-sdk.git
 
-# Start development environment
-docker-compose up -d
+# Flutter SDK
+git clone git@github.com:BerjisTech/kra-connect-flutter-sdk.git
+
+# CLI Tool
+git clone git@github.com:BerjisTech/kra-cli.git
 ```
+
+Each repository has its own development setup, testing, and contribution guidelines.
 
 ## 🤝 Contributing
 
@@ -125,16 +142,18 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📋 Project Status
 
-This project is currently in active development. See our [Project Board](https://github.com/your-org/kra-connect/projects/1) for current status and [Roadmap](./ROADMAP.md) for planned features.
+### Completed Components
+- ✅ **Python SDK** - Production ready
+- ✅ **Node.js SDK** - Production ready
+- ✅ **PHP SDK** - Production ready (Laravel & Symfony support)
+- ✅ **Go SDK** - Production ready
+- ✅ **Flutter SDK** - Production ready
+- ✅ **CLI Tool** - Core features complete
 
-### Current Phase
-**Phase 2: Core SDK Development** (Weeks 3-6)
-- ✅ Project infrastructure setup
-- 🚧 Python SDK development
-- 🚧 Node.js SDK development
-- ⏳ PHP SDK development
-- ⏳ Go SDK development
-- ⏳ Flutter SDK development
+### Next Phase
+- ⏳ Documentation website
+- ⏳ Mock API server for testing
+- ⏳ Business applications (Dashboard, Mobile App)
 
 ## 📄 License
 
