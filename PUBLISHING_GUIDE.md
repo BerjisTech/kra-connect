@@ -47,7 +47,8 @@ This guide provides step-by-step instructions for publishing all KRA-Connect SDK
 
 1. **Install Publishing Tools**
    ```bash
-   pip install --upgrade build twine
+   cd packages/kra-connect-python-sdk
+   python -m pip install --upgrade pip build twine
    ```
 
 2. **Create PyPI Account**
@@ -80,7 +81,7 @@ This guide provides step-by-step instructions for publishing all KRA-Connect SDK
 
 1. **Navigate to SDK Directory**
    ```bash
-   cd packages/python-sdk
+   cd packages/kra-connect-python-sdk
    ```
 
 2. **Update Version Number**
@@ -96,13 +97,11 @@ This guide provides step-by-step instructions for publishing all KRA-Connect SDK
    pytest tests/ --cov=kra_connect --cov-report=html
    ```
 
-4. **Build Distribution**
+4. **Build & Validate Artifacts**
    ```bash
-   # Clean previous builds
    rm -rf dist/ build/ *.egg-info/
-
-   # Build source and wheel distributions
    python -m build
+   python -m twine check dist/*
    ```
 
 5. **Test on TestPyPI (Recommended)**
@@ -113,10 +112,34 @@ This guide provides step-by-step instructions for publishing all KRA-Connect SDK
    pip install --index-url https://test.pypi.org/simple/ kra-connect
    ```
 
-6. **Publish to PyPI**
+6. **Publish to PyPI (manual fallback)**
    ```bash
    twine upload dist/*
    ```
+
+### Automation (GitHub Actions)
+
+- Workflow file: `packages/kra-connect-python-sdk/.github/workflows/publish-pypi.yml`
+- Trigger: GitHub release (type `published`) or manual `workflow_dispatch`
+- Publisher type: [Trusted Publisher](https://docs.pypi.org/trusted-publishers/) using OpenID Connect (no PyPI token stored in GitHub)
+- Environment: `pypi-release` (configure in GitHub → Settings → Environments if you want reviewers/approvals)
+- Secrets required: none for publishing (still keep a PyPI token locally for manual emergency uploads)
+- Repository visibility: can remain **private**; PyPI only verifies the workflow + environment you register.
+
+**Register the Trusted Publisher on PyPI**
+
+1. Visit https://pypi.org/manage/project/kra-connect/publishing/ and click **Add a publisher**.
+2. Choose **GitHub Actions** and fill in:
+   - **Owner:** `BerjisTech`
+   - **Repository:** `kra-connect-python-sdk`
+   - **Workflow:** `.github/workflows/publish-pypi.yml`
+   - **Environment:** `pypi-release`
+3. Save the publisher. PyPI now issues short-lived credentials every time the workflow runs, so no `PYPI_API_TOKEN` is needed in GitHub.
+
+Recommended release flow:
+1. Cut a release branch, bump the version in `pyproject.toml`, and merge to `main`.
+2. Draft a GitHub release with the same version tag (for example `v0.2.0`). When the release is published the workflow builds and uploads to PyPI automatically.
+3. If you need to test first, point `twine upload --repository testpypi` at your artifacts (or configure a second workflow job targeting TestPyPI).
 
 7. **Verify Publication**
    ```bash
@@ -132,7 +155,8 @@ This guide provides step-by-step instructions for publishing all KRA-Connect SDK
 
 ### Links
 - Package: https://pypi.org/project/kra-connect/
-- Documentation: Auto-generated from README.md
+- GitHub Workflow: `.github/workflows/publish-pypi.yml`
+- Documentation: https://docs.kra-connect.dev/python (and `packages/kra-connect-python-sdk/README.md`)
 
 ---
 
