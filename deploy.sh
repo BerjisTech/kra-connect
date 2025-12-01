@@ -36,7 +36,11 @@ require_cmd() {
 run_in_dir() {
   local dir="$1"
   shift
-  (cd "${dir}" && "$@")
+  pushd "${dir}" >/dev/null
+  "$@"
+  local status=$?
+  popd >/dev/null
+  return ${status}
 }
 
 deploy_python() {
