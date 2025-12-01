@@ -1,0 +1,241 @@
+{
+  "info": {
+    "name": "KRA_Customs_Status_Checker",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "3ac7580b-9af6-4927-9342-47c5855251bb"
+  },
+  "item": [
+    {
+      "item": [
+        {
+          "name": "GetToken-Sandbox",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "    pm.collectionVariables.set(\"access_token-sbx\",jsonData.access_token);\r",
+                  "\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "https://sbx.kra.go.ke/v1/token/generate?grant_type=client_credentials",
+              "host": [
+                "sbx",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "v1",
+                "token",
+                "generate"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "type": "string",
+                  "value": ""
+                },
+                {
+                  "key": "username",
+                  "type": "string",
+                  "value": ""
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET"
+          },
+          "response": []
+        },
+        {
+          "name": "SBX-Customs-Declaration-Status",
+          "request": {
+            "url": {
+              "raw": "https://sbx.kra.go.ke/checker/v1/simple/declaration",
+              "host": [
+                "sbx",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "checker",
+                "v1",
+                "simple",
+                "declaration"
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{access_token-sbx}}"
+                }
+              ]
+            },
+            "body": {
+              "raw": "{\r\n    \"DeclarationNo\": \"20WILIM600000181\"\r\n}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "method": "POST"
+          },
+          "response": []
+        }
+      ],
+      "name": "Sandbox"
+    },
+    {
+      "item": [
+        {
+          "name": "GetToken-Prod",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "    pm.collectionVariables.set(\"access_token-prod\",jsonData.access_token);\r",
+                  "\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "https://sbx.kra.go.ke/v1/token/generate?grant_type=client_credentials",
+              "host": [
+                "sbx",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "v1",
+                "token",
+                "generate"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "type": "string",
+                  "value": ""
+                },
+                {
+                  "key": "username",
+                  "type": "string",
+                  "value": ""
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET"
+          },
+          "response": []
+        },
+        {
+          "name": "Prod-Customs-Declaration-Status",
+          "request": {
+            "url": {
+              "raw": "https://api.kra.go.ke/checker/v1/simple/declaration",
+              "host": [
+                "api",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "checker",
+                "v1",
+                "simple",
+                "declaration"
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{access_token-prod}}"
+                }
+              ]
+            },
+            "body": {
+              "raw": "{\r\n    \"DeclarationNo\": \"\"\r\n}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "method": "POST"
+          },
+          "response": []
+        }
+      ],
+      "name": "Production"
+    }
+  ]
+}

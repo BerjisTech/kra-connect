@@ -1,0 +1,265 @@
+{
+  "info": {
+    "name": "KRA_Individual_PIN_Generation Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "item": [
+        {
+          "name": "GetToken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "    pm.collectionVariables.set(\"access_token_sbx\",jsonData.access_token);\r",
+                  "\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "https://sbx.kra.go.ke/v1/token/generate?grant_type=client_credentials",
+              "host": [
+                "sbx",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "v1",
+                "token",
+                "generate"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "type": "string",
+                  "value": ""
+                },
+                {
+                  "key": "username",
+                  "type": "string",
+                  "value": ""
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET"
+          },
+          "response": []
+        },
+        {
+          "name": "KRA_PIN_Generation-SBX",
+          "request": {
+            "url": {
+              "raw": "https://sbx.kra.go.ke/v1/generate/pin",
+              "host": [
+                "sbx",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "v1",
+                "generate",
+                "pin"
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{access_token_sbx}}"
+                }
+              ]
+            },
+            "body": {
+              "raw": "{\r\n    \"TAXPAYERDETAILS\": {\r\n            \"TaxpayerType\": \"KE\",\r\n            \"IdentificationNumber\": \"{{national_id}}\",\r\n            \"DateOfBirth\": \"03/02/1990\",\r\n            \"MobileNumber\": \"{{mobile_number}}\",\r\n            \"EmailAddress\": \"{{emailaddress}}\",\r\n            \"IsPinWithNoOblig\": \"No\"\r\n        }\r\n    }",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "method": "POST"
+          },
+          "response": []
+        }
+      ],
+      "name": "Sandbox"
+    },
+    {
+      "item": [
+        {
+          "name": "GetToken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "    pm.collectionVariables.set(\"access_token_prod\",jsonData.access_token);\r",
+                  "\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "https://api.kra.go.ke/v1/token/generate?grant_type=client_credentials",
+              "host": [
+                "api",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "v1",
+                "token",
+                "generate"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "type": "string",
+                  "value": ""
+                },
+                {
+                  "key": "username",
+                  "type": "string",
+                  "value": ""
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET"
+          },
+          "response": []
+        },
+        {
+          "name": "KRA_PIN_Generation-PROD",
+          "request": {
+            "url": {
+              "raw": "https://api.kra.go.ke/v1/generate/pin",
+              "host": [
+                "api",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "v1",
+                "generate",
+                "pin"
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{access_token_prod}}"
+                }
+              ]
+            },
+            "body": {
+              "raw": "{\r\n    \"TAXPAYERDETAILS\": {\r\n            \"TaxpayerType\": \"KE\",\r\n            \"IdentificationNumber\": \"{{national_id}}\",\r\n            \"DateOfBirth\": \"03/02/1990\",\r\n            \"MobileNumber\": \"{{mobile_number}}\",\r\n            \"EmailAddress\": \"{{emailaddress}}\",\r\n            \"IsPinWithNoOblig\": \"No\"\r\n        }\r\n    }",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "method": "POST"
+          },
+          "response": []
+        }
+      ],
+      "name": "Production"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "type": "text/javascript",
+        "packages": {}
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "type": "text/javascript",
+        "packages": {}
+      }
+    }
+  ],
+  "variable": [
+    {
+      "value": ""
+    }
+  ]
+}

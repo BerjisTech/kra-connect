@@ -1,0 +1,182 @@
+{
+  "info": {
+    "name": "KRA_Know_Your_Station",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "_postman_id": "1a2a9fe3-b7a8-40b3-9e35-0e7fc02b3d8e"
+  },
+  "item": [
+    {
+      "name": "GetToken",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "\r",
+              "\r",
+              "    pm.response.to.have.status(200);\r",
+              "\r",
+              "\r",
+              "    var jsonData = pm.response.json();\r",
+              "\r",
+              "\r",
+              "    pm.collectionVariables.set(\"access_token\",jsonData.access_token);\r",
+              "\r",
+              "\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "url": {
+          "raw": "https://sbx.kra.go.ke/v1/token/generate?grant_type=client_credentials",
+          "host": [
+            "sbx",
+            "kra",
+            "go",
+            "ke"
+          ],
+          "path": [
+            "v1",
+            "token",
+            "generate"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "client_credentials"
+            }
+          ],
+          "protocol": "https"
+        },
+        "auth": {
+          "type": "basic",
+          "basic": {
+            "password": "",
+            "username": ""
+          }
+        },
+        "header": [],
+        "method": "GET"
+      },
+      "response": []
+    },
+    {
+      "name": "Know_Your_Station",
+      "request": {
+        "url": "https://sbx.kra.go.ke/dtd/checker/v1/station",
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "token": "{{access_token}}"
+          }
+        },
+        "body": {
+          "raw": "{\r\n    \"kraPIN\": \"A744610021G\"\r\n}\r\n",
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "header": [],
+        "method": "POST"
+      },
+      "response": [
+        {
+          "body": "{\n    \"RESPONSE\": {\n        \"RESULT\": {\n            \"ResponseCode\": \"84000\",\n            \"Message\": \"Station Name is sent successfully\",\n            \"Status\": \"OK\"\n        },\n        \"STATIONDATA\": {\n            \"kraPin\": \"A014216563T\",\n            \"stationName\": \"ELDORET\"\n        }\n    }\n}",
+          "code": 200,
+          "name": "Success Response",
+          "cookie": [],
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "content-length",
+              "value": "457"
+            },
+            {
+              "key": "date",
+              "value": "Tue, 08 Apr 2025 10:01:31 GMT"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding"
+            },
+            {
+              "key": "x-request-id",
+              "value": "adaba261-f911-416d-8de0-9c66ebef8523"
+            }
+          ],
+          "status": "OK",
+          "originalRequest": {
+            "url": "https://sbx.kra.go.ke/dtd/checker/v1/station",
+            "body": {
+              "raw": "{\r\n    \"iTaxUSSDKnowStationRequest\": {\r\n        \"kraPIN\": \"A014216563T\"\r\n    }\r\n}\r\n",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "method": "POST"
+          },
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "body": "{\n    \"RequestId\": \"a56e161a-cada-43d5-9437-ca884a84ec252808\",\n    \"ErrorCode\": \"84002\",\n    \"ErrorMessage\": \"Inactive / Wrong PIN\"\n}",
+          "code": 200,
+          "name": "Failed Response",
+          "cookie": [],
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "content-length",
+              "value": "183"
+            },
+            {
+              "key": "date",
+              "value": "Tue, 15 Apr 2025 12:27:49 GMT"
+            },
+            {
+              "key": "vary",
+              "value": "Accept-Encoding"
+            },
+            {
+              "key": "x-request-id",
+              "value": "c7f23f3b-4f41-46ca-a501-e94bb070ffb4"
+            }
+          ],
+          "status": "OK",
+          "originalRequest": {
+            "url": "https://sbx.kra.go.ke/dtd/checker/v1/station",
+            "body": {
+              "raw": "{\r\n    \"iTaxUSSDKnowStationRequest\": {\r\n        \"kraPIN\": \"A01421563T\"\r\n    }\r\n}\r\n",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "method": "POST"
+          },
+          "_postman_previewlanguage": "json"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,267 @@
+{
+  "info": {
+    "name": "KRA_TOT_Return_Filing Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "item": [
+        {
+          "name": "GetToken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "    pm.collectionVariables.set(\"access_token_sbx\",jsonData.access_token);\r",
+                  "\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "https://sbx.kra.go.ke/v1/token/generate?grant_type=client_credentials",
+              "host": [
+                "sbx",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "v1",
+                "token",
+                "generate"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "type": "string",
+                  "value": ""
+                },
+                {
+                  "key": "username",
+                  "type": "string",
+                  "value": ""
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET"
+          },
+          "response": []
+        },
+        {
+          "name": "TOT Return Filing - SBX",
+          "request": {
+            "url": {
+              "raw": "https://sbx.kra.go.ke/filing/v1/tot/paymentregistration",
+              "host": [
+                "sbx",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "filing",
+                "v1",
+                "tot",
+                "paymentregistration"
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{access_token_sbx}}"
+                }
+              ]
+            },
+            "body": {
+              "raw": "{\r\n    \"TAXPAYERDETAILS\": {\r\n       \r\n        \"TaxpayerPIN\": \"A000000000Y\",\r\n        \"Month\": \"07\",\r\n        \"Year\": \"2025\",\r\n        \"GrossTurnover\": 1000\r\n    }\r\n}\r\n",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "method": "POST"
+          },
+          "response": []
+        }
+      ],
+      "name": "Sandbox"
+    },
+    {
+      "item": [
+        {
+          "name": "GetToken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "    pm.collectionVariables.set(\"access_token_prod\",jsonData.access_token);\r",
+                  "\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "url": {
+              "raw": "https://api.kra.go.ke/v1/token/generate?grant_type=client_credentials",
+              "host": [
+                "api",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "v1",
+                "token",
+                "generate"
+              ],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "type": "string",
+                  "value": ""
+                },
+                {
+                  "key": "username",
+                  "type": "string",
+                  "value": ""
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET"
+          },
+          "response": []
+        },
+        {
+          "name": "TOT Return Filing - PROD",
+          "request": {
+            "url": {
+              "raw": "https://api.kra.go.ke/filing/v1/tot/paymentregistration",
+              "host": [
+                "api",
+                "kra",
+                "go",
+                "ke"
+              ],
+              "path": [
+                "filing",
+                "v1",
+                "tot",
+                "paymentregistration"
+              ],
+              "protocol": "https"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{access_token_prod}}"
+                }
+              ]
+            },
+            "body": {
+              "raw": "{\r\n    \"TAXPAYERDETAILS\": {\r\n       \r\n        \"TaxpayerPIN\": \"A000000000Y\",\r\n        \"Month\": \"07\",\r\n        \"Year\": \"2025\",\r\n        \"GrossTurnover\": 1000\r\n    }\r\n}\r\n",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [],
+            "method": "POST"
+          },
+          "response": []
+        }
+      ],
+      "name": "Production"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "type": "text/javascript",
+        "packages": {}
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "type": "text/javascript",
+        "packages": {}
+      }
+    }
+  ],
+  "variable": [
+    {
+      "value": ""
+    }
+  ]
+}

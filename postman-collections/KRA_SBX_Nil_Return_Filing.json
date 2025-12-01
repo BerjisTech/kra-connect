@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "KRA_SBX_Nil_Return_Filing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "ae63c0f3-f87d-497a-8d5f-b95a3e54a248",
+    "_exporter_id": "25599294"
+  },
+  "item": [
+    {
+      "name": "GetToken",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "\r",
+              "\r",
+              "    pm.response.to.have.status(200);\r",
+              "\r",
+              "\r",
+              "    var jsonData = pm.response.json();\r",
+              "\r",
+              "\r",
+              "    pm.collectionVariables.set(\"access_token\",jsonData.access_token);\r",
+              "\r",
+              "\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "url": {
+          "raw": "https://sbx.kra.go.ke/oauth/v1/generate?grant_type=client_credentials",
+          "host": [
+            "sbx",
+            "kra",
+            "go",
+            "ke"
+          ],
+          "path": [
+            "v1",
+            "token",
+            "generate"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "client_credentials"
+            }
+          ],
+          "protocol": "https"
+        },
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "key": "password",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "header": [],
+        "method": "GET"
+      },
+      "response": []
+    },
+    {
+      "name": "KRA_NIL_Return_Filing",
+      "request": {
+        "url": {
+          "raw": "https://sbx.kra.go.ke/dtd/return/v1/nil",
+          "host": [
+            "sbx",
+            "kra",
+            "go",
+            "ke"
+          ],
+          "path": [
+            "dtd",
+            "return",
+            "v1",
+            "nil"
+          ],
+          "protocol": "https"
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "type": "string",
+              "value": "{{access_token}}"
+            }
+          ]
+        },
+        "body": {
+          "raw": "{\r\n    \"TAXPAYERDETAILS\": {\r\n        \"TaxpayerPIN\": \"\",\r\n        \"ObligationCode\": 1,\r\n        \"Month\": 1,\r\n        \"Year\": 2020\r\n    }\r\n}",
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "header": [],
+        "method": "POST"
+      },
+      "response": []
+    }
+  ]
+}

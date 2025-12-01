@@ -1,0 +1,153 @@
+{
+  "info": {
+    "name": "KRA-SBX-Tax_Compliance_Cert-Validation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25599294"
+  },
+  "item": [
+    {
+      "name": "Get-Auth-Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              " ",
+              "    pm.response.to.have.status(200);",
+              " ",
+              "    var jsonData = pm.response.json();",
+              " ",
+              "    pm.collectionVariables.set(\"access_token\",jsonData.access_token);",
+              " ",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "url": {
+          "raw": "https://sbx.kra.go.ke/v1/token/generate?grant_type=client_credentials",
+          "host": [
+            "sbx",
+            "kra",
+            "go",
+            "ke"
+          ],
+          "path": [
+            "v1",
+            "token",
+            "generate"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "client_credentials"
+            }
+          ],
+          "protocol": "https"
+        },
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "key": "username",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "key": "showPassword",
+              "type": "boolean",
+              "value": false
+            }
+          ]
+        },
+        "header": [],
+        "method": "GET"
+      },
+      "response": []
+    },
+    {
+      "name": "TCC Checker",
+      "request": {
+        "url": {
+          "raw": "https://sbx.kra.go.ke/v1/kra-tcc/validate",
+          "host": [
+            "sbx",
+            "kra",
+            "go",
+            "ke"
+          ],
+          "path": [
+            "v1",
+            "kra-tcc",
+            "validate"
+          ],
+          "protocol": "https"
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "type": "string",
+              "value": "{{access_token}}"
+            }
+          ]
+        },
+        "body": {
+          "raw": "{\r\n  \"kraPIN\": \"A12345678\",\r\n  \"tccNumber\": \"KRAEON1294973222\"\r\n}",
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "header": [],
+        "method": "POST"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "type": "text/javascript",
+        "packages": {}
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "type": "text/javascript",
+        "packages": {}
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "access_token",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "key": "tcc_access_token",
+      "value": ""
+    }
+  ]
+}
