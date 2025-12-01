@@ -66,7 +66,7 @@ build_php() {
 build_node_package() {
   local dir="$1"
   require_cmd npm
-  run_in_dir "${dir}" npm install
+  run_in_dir "${dir}" npm install --package-lock=false --ignore-workspace-root-check
   run_in_dir "${dir}" npm run build --if-present
   run_in_dir "${dir}" npm run test --if-present || true
 }
