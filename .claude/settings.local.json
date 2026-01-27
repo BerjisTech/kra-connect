@@ -24,7 +24,10 @@
       "Bash(go mod init:*)",
       "Bash(go get:*)",
       "Bash(curl:*)",
-      "Bash(npm init:*)"
+      "Bash(npm init:*)",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
